@@ -1,7 +1,14 @@
 #! /bin/bash
 
 #Author : Akash Suchak
-#Welcome Message
+#Flipping a coin to Display Heads or Tails
 
-#Display Message
-echo "Welcome to Flip Coin Combination Problem"
+#Random Value 0 or 1
+isCheck=$((RANDOM%2))
+
+#Checking Heads or Tails
+if [ "$isCheck" -eq 0 ]; then
+	echo "Heads"
+else
+	echo "Tails"
+fi
