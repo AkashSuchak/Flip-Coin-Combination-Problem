@@ -39,10 +39,6 @@ function winnerDeclare(){
 	echo "============================"
 }
 
-#Calling Fuctions
-#singlet $num
-#doublet $num
-#triplet $num
 main=(singlet doublet triplet)
 
 #Declaring Dictionary
