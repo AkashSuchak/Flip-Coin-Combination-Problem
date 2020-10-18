@@ -1,9 +1,7 @@
 #! /bin/bash
 
 #Author : Akash Suchak
-#As A Simulator, Lopp through Multiple times of flipping a coin store
-#the singlet combination in a dictionary. Finally determine the
-#percentage of the Singlet combination.
+#As A Simulator, Loop to crete doublet combination. Store the doublet Combination as well as the percentage
 
 
 #User-Input
