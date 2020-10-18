@@ -1,73 +1,106 @@
 #! /bin/bash
 
 #Author : Akash Suchak
-#As A Simulator, Do the same Triplet Combination
+#As A Simulator, Sort the Singlet, Doublet and Triplet Combination and show the winning Combination
 
 
 #User-Input
-read -p "Enter Number : " number
+read -p "Enter Number : " num
+echo "Flipping Coins $num Times"
+echo "============================"
+
+#Counting Percentage, Storing into Dictionary and Displaying Winner
+function winnerDeclare(){
+	max=0
+        for k in ${!coin[@]}
+        do
+        	#display[$k]=`awk -v number=$number -v a=${coin[$k]} 'BEGIN{result=(100 * a  / number); print result}'`
+		display[$k]=$((100 * ${coin[$k]}  / $number))
+
+                #echo "$k : ${display[$k]}%"
+
+                #If Winner is more than 1
+                if [ "$max" -lt "${display[$k]}" ]; then
+                	max="${display[$k]}"
+                        winner=()
+                        winner[$k]="$max"
+
+                elif [ "$max" -eq "${display[$k]}" ]; then
+                        winner[$k]="$max"
+                fi
+        done
+	echo "$1 Winners"
+        echo "----------------"
+
+	for l in ${!winner[@]}
+        do
+	        echo "$l : ${winner[$l]}%"
+        done
+	echo "============================"
+}
+
+#Calling Fuctions
+#singlet $num
+#doublet $num
+#triplet $num
+main=(singlet doublet triplet)
 
 #Declaring Dictionary
-declare -A coin
-declare -A display
+declare -A coin #For Values
+declare -A display #For Percentage
+declare -A winner #Multiple Winner
 
+function findwinner(){
+        number=$1
 
-if [[ $number ]] && [ "$number" -eq "$number" 2>/dev/null -a  "$number" -gt 0 ]; then
+        if [[ $number ]] && [ "$number" -eq "$number" 2>/dev/null -a  "$number" -gt 0 ]; then
+		for (( p=0; p<3; p++ ))
+		do
+			coin=()
+			display=()
+			winner=()
+        		arrValue=(h t)
 
-	#Flipping Coin Till User-Input
-	for (( i=1; i<="$number"; i++ ))
-	do
-		#Random Value 0 or 1
-		coin1=$((RANDOM%2))
-		coin2=$((RANDOM%2))
-		coin3=$((RANDOM%2))
+                	#Flipping Coin Till User-Input
+	                for (( i=1; i<="$number"; i++ ))
+        	        do
+                	        #Random Value 0 or 1
+                        	coin1=$((RANDOM%2))
+				if [ "$p" -gt 0 ]; then
+		                        coin2=$((RANDOM%2))
+				fi
+				if [ "$p" -gt 1 ]; then
+        	                	coin3=$((RANDOM%2))
+				fi
+				case $p in
+					0)
+                		    	        #Checking singlet Combination
+                        			key=${arrValue[$coin1]}
+						;;
+					1)
+                                        	#Checking Doublet Combination
+	                                        key=${arrValue[$coin1]}${arrValue[$coin2]}
+        	                                ;;
+					2)
+                	                        #Checking Triplet Combination
+                        	                key=${arrValue[$coin1]}${arrValue[$coin2]}${arrValue[$coin3]}
+                                	        ;;
+				esac
+		                key_value=${coin[$key]}
 
-		#Checking Triplet Combination
-		if [ "$coin1" -eq 0 -a "$coin2" -eq 0 -a "$coin3" -eq 0 ]; then
-			hhh=$(("$hhh" + 1 ))
+        		        if [ -z "$key_value" ]; then
+                			key_value=0
+                        	fi
+	                        key_value=$(($key_value + 1))
+        	               	coin[$key]=$key_value
+               		 done
 
-		elif [ "$coin1" -eq 0 -a "$coin2" -eq 0 -a "$coin3" -eq 1 ]; then
-                        hht=$(("$hht" + 1 ))
+			#Calling Function
+        	        winnerDeclare ${main[$p]}
+		done
+        else
+                echo "Wrong Input !!!"
+        fi
+}
 
-		elif [ "$coin1" -eq 0 -a "$coin2" -eq 1 -a "$coin3" -eq 1 ]; then
-                        htt=$(("$htt" + 1 ))
-
-		elif [ "$coin1" -eq 0 -a "$coin2" -eq 1 -a "$coin3" -eq 0 ]; then
-                        hth=$(("$hth" + 1 ))
-
-		elif [ "$coin1" -eq 1 -a "$coin2" -eq 0 -a "$coin3" -eq 0 ]; then
-                        thh=$(("$thh" + 1 ))
-
-                elif [ "$coin1" -eq 1 -a "$coin2" -eq 0 -a "$coin3" -eq 1 ]; then
-                        tht=$(("$tht" + 1 ))
-
-                elif [ "$coin1" -eq 1 -a "$coin2" -eq 1 -a "$coin3" -eq 0 ]; then
-                        tth=$(("$tth" + 1 ))
-
-                elif [ "$coin1" -eq 1 -a "$coin2" -eq 1 -a "$coin3" -eq 1 ]; then
-                        ttt=$(("$ttt" + 1 ))
-
-		fi
-	done
-
-	#Store Into Dictionary
-	coin[hhh]=$hhh
-	coin[hht]=$hht
-	coin[htt]=$htt
-        coin[hth]=$hth
-	coin[thh]=$thh
-        coin[tht]=$tht
-        coin[tth]=$tth
-        coin[ttt]=$ttt
-
-
-	#Counting Percentage and Displaying results
-	echo "Flipping Coins $number Times"
-	for k in ${!coin[@]}
-	do
-		display[$k]=`awk -v number=$number -v a=${coin[$k]} 'BEGIN{result=(100 * a  / number); print result}'`
-		echo "$k : ${display[$k]} %"
-	done
-else
-	echo "Wrong Input !!!"
-fi
+findwinner $num
